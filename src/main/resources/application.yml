@@ -13,6 +13,10 @@ spring:
       format_sql: true
       ddl-auto: create
 
+  redis:
+    port: 6379
+    host: localhost
+
 logging:
   level:
     org:
@@ -22,3 +26,6 @@ logging:
           descriptor:
             sql:
               BasicBinder: TRACE
+
+jwt:
+  secret: g40qpz5p29b3t3rf76clysr509r0q0
