@@ -11,7 +11,7 @@ spring:
     show-sql: true
     hibernate:
       format_sql: true
-      ddl-auto: create
+      ddl-auto: update
 
   redis:
     port: 6379
@@ -28,4 +28,4 @@ logging:
               BasicBinder: TRACE
 
 jwt:
-  secret: g40qpz5p29b3t3rf76clysr509r0q0
+  secret: g40qpz5p29b3t3rf76clysr509r0q0asdasdasdwafdasdasddw
