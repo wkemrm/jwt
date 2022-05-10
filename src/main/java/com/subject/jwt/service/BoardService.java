@@ -65,4 +65,11 @@ public class BoardService {
         result.put("result", id);
         return result;
     }
+
+    public Map deleteBoard(Long id) {
+        boardRepository.deleteById(id);
+        Map<String, Long> result = new HashMap();
+        result.put("result", id);
+        return result;
+    }
 }
