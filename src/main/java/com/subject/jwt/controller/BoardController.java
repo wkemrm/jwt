@@ -17,4 +17,17 @@ public class BoardController {
 
         return new Response(boardService.addBoard(addBoardDto));
     }
+
+    // 모든 게시판 글 조회
+    @GetMapping
+    public Response getBoardList() {
+        return new Response(boardService.getBoardList());
+    }
+    
+    // 게시판 단일 조회
+    @GetMapping("/{id}")
+    public Response getBoard(@PathVariable Long id) {
+        return new Response(boardService.getBoard(id));
+    }
+    
 }
