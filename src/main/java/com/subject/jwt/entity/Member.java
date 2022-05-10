@@ -8,6 +8,7 @@ import javax.persistence.*;
 
 @Entity
 @Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
@@ -15,13 +16,17 @@ import javax.persistence.*;
 public class Member {
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "MEMBER_ID")
     private Long id;
 
+    @Column(name = "USERNAME", unique = true)
     private String username;
 
+    @Column(name = "PASSWORD")
     private String password;
 
     @Enumerated(EnumType.STRING)
+    @Column(name = "ROLE")
     private Role role;
 
     public static Member ofUser(JoinDto joinDto) {

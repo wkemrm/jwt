@@ -3,10 +3,7 @@ package com.subject.jwt.security;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.subject.jwt.entity.Member;
 import com.subject.jwt.enums.Role;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -16,11 +13,13 @@ import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 
-@Getter
+@Getter @Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
 public class CustomUserDetails implements UserDetails {
+
+    private Long id;
     private String username;
     private String password;
     private List<Role> roleList;
@@ -29,12 +28,15 @@ public class CustomUserDetails implements UserDetails {
         List<Role> role = new ArrayList<>();
         role.add(member.getRole());
         return CustomUserDetails.builder()
+                .id(member.getId())
                 .username(member.getUsername())
                 .password(member.getPassword())
                 .roleList(role)
                 .build();
     }
+
     @Override
+    @JsonIgnore
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return roleList.stream()
                 .map(role -> new SimpleGrantedAuthority(role.toString()))

@@ -3,6 +3,7 @@ package com.subject.jwt.controller;
 import com.subject.jwt.dto.JoinDto;
 import com.subject.jwt.dto.LoginDto;
 import com.subject.jwt.dto.TokenDto;
+import com.subject.jwt.dto.response.Response;
 import com.subject.jwt.service.MemberService;
 import com.subject.jwt.util.JwtTokenUtil;
 import lombok.RequiredArgsConstructor;
@@ -19,34 +20,34 @@ public class MemberController {
     private final JwtTokenUtil jwtTokenUtil;
 
     @PostMapping("/join/user")
-    public String joinUser(@RequestBody JoinDto joinDto) {
+    public Response joinUser(@RequestBody JoinDto joinDto) {
         memberService.joinUser(joinDto);
-        return "유저 회원가입 완료";
+        return new Response("유저 회원가입 완료");
     }
 
     @PostMapping("/join/admin")
-    public String joinAdmin(@RequestBody JoinDto joinDto) {
+    public Response joinAdmin(@RequestBody JoinDto joinDto) {
         memberService.joinAdmin(joinDto);
-        return "어드민 회원가입 완료";
+        return new Response("어드민 회원가입 완료");
     }
 
     @PostMapping("/login")
-    public ResponseEntity<TokenDto> login(@RequestBody LoginDto loginDto) {
-        return ResponseEntity.ok(memberService.login(loginDto));
+    public Response login(@RequestBody LoginDto loginDto) {
+        return new Response(memberService.login(loginDto));
     }
 
     @PostMapping("/logout")
-    public String logout(@RequestHeader("Authorization") String accessToken, @RequestHeader("RefreshToken") String refreshToken) {
+    public Response logout(@RequestHeader("Authorization") String accessToken, @RequestHeader("RefreshToken") String refreshToken) {
         System.out.println("accessToken = " + accessToken);
         System.out.println("refreshToken = " + refreshToken);
         memberService.logout(TokenDto.of(accessToken, refreshToken), jwtTokenUtil.getUsername(resolveToken(accessToken)));
         
-        return "로그아웃 완료";
+        return new Response("로그아웃 완료");
     }
 
     @PostMapping("/reissue")
-    public ResponseEntity<TokenDto> reissue(@RequestHeader("RefreshToken") String refreshToken) {
-        return ResponseEntity.ok(memberService.reissue(refreshToken));
+    public Response reissue(@RequestHeader("RefreshToken") String refreshToken) {
+        return new Response(memberService.reissue(refreshToken));
     }
 
     private String resolveToken(String token) {
