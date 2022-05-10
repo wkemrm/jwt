@@ -44,6 +44,11 @@ public class MemberController {
         return "로그아웃 완료";
     }
 
+    @PostMapping("/reissue")
+    public ResponseEntity<TokenDto> reissue(@RequestHeader("RefreshToken") String refreshToken) {
+        return ResponseEntity.ok(memberService.reissue(refreshToken));
+    }
+
     private String resolveToken(String token) {
         return token.substring(7);
     }

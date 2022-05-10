@@ -14,6 +14,9 @@ import com.subject.jwt.repsitory.MemberRepository;
 import com.subject.jwt.util.JwtTokenUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -72,6 +75,33 @@ public class MemberService {
         logoutAccessTokenRedisRepository.save(LogoutAccessToken.of(accessToken, username, remainMilliSeconds));
     }
 
+    public TokenDto reissue(String refreshToken) {
+        String username = getCurrentUsername();
+        RefreshToken redisRefreshToken = refreshTokenRedisRepository.findById(username).orElseThrow(() -> new NoSuchElementException());
+
+        if (refreshToken.equals(redisRefreshToken.getRefreshToken())) {
+            return reissueRefreshToken(refreshToken, username);
+        }
+        throw new IllegalArgumentException("토큰이 일치하지 않습니다.");
+    }
+
+    public String getCurrentUsername() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        UserDetails principal = (UserDetails) authentication.getPrincipal();
+        return principal.getUsername();
+    }
+
+    private TokenDto reissueRefreshToken(String refreshToken, String username) {
+        if (lessThanReissueExpirationTimesLeft(refreshToken)) {
+            String accessToken = jwtTokenUtil.generateAccessToken(username);
+            return TokenDto.of(accessToken, saveRefreshToken(username).getRefreshToken());
+        }
+        return TokenDto.of(jwtTokenUtil.generateAccessToken(username), refreshToken);
+    }
+
+    private boolean lessThanReissueExpirationTimesLeft(String refreshToken) {
+        return jwtTokenUtil.getRemainMilliSeconds(refreshToken) < JwtExpirationEnum.REISSUE_EXPIRATION_TIME.getValue();
+    }
     private String resolveToken(String token) {
         return token.substring(7);
     }
