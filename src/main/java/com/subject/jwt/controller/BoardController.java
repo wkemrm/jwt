@@ -1,6 +1,7 @@
 package com.subject.jwt.controller;
 
 import com.subject.jwt.dto.AddBoardDto;
+import com.subject.jwt.dto.UpdateBoardDto;
 import com.subject.jwt.dto.response.Response;
 import com.subject.jwt.service.BoardService;
 import lombok.RequiredArgsConstructor;
@@ -29,5 +30,9 @@ public class BoardController {
     public Response getBoard(@PathVariable Long id) {
         return new Response(boardService.getBoard(id));
     }
-    
+
+    @PutMapping("/{id}")
+    public Response updateBoard(@PathVariable Long id, @RequestBody UpdateBoardDto updateBoardDto) {
+        return new Response(boardService.updateBoard(id, updateBoardDto));
+    }
 }

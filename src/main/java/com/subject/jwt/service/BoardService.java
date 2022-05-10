@@ -3,6 +3,7 @@ package com.subject.jwt.service;
 import com.subject.jwt.dto.AddBoardDto;
 import com.subject.jwt.dto.AddBoardResultDto;
 import com.subject.jwt.dto.BoardDto;
+import com.subject.jwt.dto.UpdateBoardDto;
 import com.subject.jwt.entity.Board;
 import com.subject.jwt.entity.Member;
 import com.subject.jwt.repsitory.BoardRepository;
@@ -15,7 +16,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @Service
@@ -54,5 +57,12 @@ public class BoardService {
         Board board = boardRepository.findByBoardJoinMemberById(id);
 
         return new BoardDto(board.getTitle(), board.getContent(), board.getCreatedDate(), board.getMember().getUsername());
+    }
+
+    public Map updateBoard(Long id, UpdateBoardDto updateBoardDto) {
+        boardRepository.updateBoardById(id, updateBoardDto.getTitle(), updateBoardDto.getContent());
+        Map<String, Long> result = new HashMap();
+        result.put("result", id);
+        return result;
     }
 }
